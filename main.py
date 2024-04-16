@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional, List
 
 from fastapi import FastAPI, Query
@@ -7,12 +8,30 @@ from pydantic import BaseModel
 app = FastAPI()
 
 users = []
-
+items = []
+DB_table = "name_db_table"
 
 class User(BaseModel):
     email: str
     is_active: bool
     bio: Optional[str]
+
+
+class Item(BaseModel):
+    parameters: str
+    time_start: datetime
+    time_end: datetime
+
+@app.post("/items")
+async def request_in_db(item: Item):
+
+    
+    return "SELECT " + item.parameters + " FROM " + DB_table
+
+
+@app.get("/items", response_model=List[Item])
+async def return_items():
+    return items
 
 
 @app.get("/users", response_model=List[User])
