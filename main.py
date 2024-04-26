@@ -1,6 +1,10 @@
 from datetime import datetime
 from typing import Optional, List
 
+import psycopg2
+
+import os
+
 from fastapi import FastAPI, Query
 from fastapi.params import Path
 from pydantic import BaseModel
@@ -9,7 +13,38 @@ app = FastAPI()
 
 users = []
 items = []
-DB_table = "name_db_table"
+
+db_name = os.getenv('POSTGRES_DB', 'testDB')
+
+connection = psycopg2.connect(
+    dbname=os.getenv('POSTGRES_DB', 'testDB'),
+    user=os.getenv('POSTGRES_USER', 'user'),
+    host=os.getenv('POSTGRES_HOST', 'project-db'),
+    password=os.getenv('POSTGRES_PASSWORD', '123'),
+    port=os.getenv('POSTGRES_PORT', '5432')
+)
+
+cursor = connection.cursor()
+
+create_table_query = '''CREATE TABLE IF NOT EXISTS my_table (
+                            id SERIAL PRIMARY KEY,
+                            field1 VARCHAR(255),
+                            field2 VARCHAR(255)
+                        );'''
+
+cursor.execute(create_table_query)
+connection.commit()
+
+# Вставка пары значений в таблицу
+insert_query = f"INSERT INTO my_table (field1, field2) VALUES (%s, %s);"
+record_to_insert = ('значение1', 'значение2')
+cursor.execute(insert_query, record_to_insert)
+connection.commit()
+
+# Закрытие курсора и соединения
+cursor.close()
+connection.close()
+
 
 class User(BaseModel):
     email: str
@@ -25,8 +60,7 @@ class Item(BaseModel):
 @app.post("/items")
 async def request_in_db(item: Item):
 
-    
-    return "SELECT " + item.parameters + " FROM " + DB_table
+    return "SELECT " + item.parameters + " FROM " + db_name
 
 
 @app.get("/items", response_model=List[Item])

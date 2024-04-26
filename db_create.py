@@ -1,14 +1,41 @@
 import psycopg2
+import os
 import csv
 
 try:
     connection = psycopg2.connect(
-        dbname='testDB',
-        user='postgres',
-        host='localhost',
-        password='1234',
-        port='5432'
+        dbname=os.getenv('POSTGRES_DB', 'testDB'),
+        user=os.getenv('POSTGRES_USER', 'user'),
+        host="localhost",
+        password=os.getenv('POSTGRES_PASSWORD', '123'),
+        port=os.getenv('POSTGRES_PORT', '5432')
     )
+
+    # # Создание курсора для выполнения SQL-запросов
+    # cursor = connection.cursor()
+
+    # # Создание таблицы в базе данных
+    # create_table_query = '''CREATE TABLE IF NOT EXISTS my_table (
+    #                         id SERIAL PRIMARY KEY,
+    #                         field1 VARCHAR(255),
+    #                         field2 VARCHAR(255)
+    #                     );'''
+    # cursor.execute(create_table_query)
+    # connection.commit()
+
+    # # Вставка пары значений в таблицу
+    # insert_query = """INSERT INTO my_table (field1, field2) VALUES (%s, %s);"""
+    # record_to_insert = ('значение1', 'значение2')
+    # cursor.execute(insert_query, record_to_insert)
+    # connection.commit()
+
+    # # Закрытие курсора и соединения
+    # cursor.close()
+    # connection.close()
+
+    # print("Запись успешно добавлена в базу данных.")
+
+
     csv_file_path = 'C:/Users/pengv/Downloads/X_train.csv'
 
     connection.autocommit = True
