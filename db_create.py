@@ -1,23 +1,22 @@
 import psycopg2
+from params_for_DB import *
 
 try:
     connection = psycopg2.connect(
-        dbname='testDB',
-        user='postgres',
-        host='localhost',
-        password='1234',
-        port='5432'
+        dbname=dbname,
+        user=user,
+        host=host,
+        password=password,
+        port=port
     )
-    csv_file_path = 'C:/Users/pengv/Downloads/X_train.csv'
 
     connection.autocommit = True
 
-    table_name = 'data_engine'
 
-    cur = connection.cursor()
-    with open(csv_file_path, 'r', encoding="utf-8") as f:
-        next(f)
-        cur.copy_from(f, table_name, sep=',')
+    cursor = connection.cursor()
+    with open(csv_file_path, 'r', encoding="utf-8") as file:
+        next(file)
+        cursor.copy_from(file, table_name, sep=',')
 
 except Exception as _ex:
     print('Exception occurred:', _ex)
