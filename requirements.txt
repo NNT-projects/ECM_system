@@ -1,0 +1,12 @@
+Bottleneck
+joblib==1.4.0
+lightgbm==4.3.0
+numexpr
+numpy
+pandas
+pytz
+scikit-learn==1.4.2
+scipy
+six
+threadpoolctl==3.4.0
+tzdata
