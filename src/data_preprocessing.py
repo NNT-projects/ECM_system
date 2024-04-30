@@ -41,8 +41,8 @@ def preprocess_training_data(X_train_path, y_train_path, acnum):
     
     return X_train_processed, y_train_processed, X_val_processed, y_val_processed
 
-def preprocess_raw_data(X_path, acnum):
-    X = pd.read_csv(X_path, parse_dates=['reportts'])
+def preprocess_raw_data(X, acnum):
+    # X = pd.read_csv(X_path, parse_dates=['reportts'])
     
     X.rename(columns={"reportts": "datetime"}, inplace=True)
     
@@ -58,6 +58,3 @@ def preprocess_raw_data(X_path, acnum):
     X_processed = pipeline_predicting.transform(dataset_time_sorted).drop(["datetime", "egtm", "acnum"], axis=1, errors="ignore")
     
     return X_processed
-
-# print(preprocess_raw_data('data/X_train.csv', 'VQ-BGU').shape)
-# print(preprocess_raw_data('data/X_test.csv', 'VQ-BGU').shape)
