@@ -18,6 +18,8 @@ try:
         next(file)
         cursor.copy_from(file, table_name, sep=',')
 
+        cursor.execute("UPDATE " + table_name + " SET egtm = 0;")
+
 except Exception as _ex:
     print('Exception occurred:', _ex)
 
