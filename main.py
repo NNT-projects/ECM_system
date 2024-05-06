@@ -33,7 +33,7 @@ async def request_in_db(item: Item):
     quoted_string = "', '".join(split_string)
     pos = f"'{quoted_string}'"
 
-    cursor.execute(f"SELECT reportts, acnum, pos {item.parameters}" +
+    cursor.execute(f"SELECT reportts, acnum, pos, {item.parameters}" +
                    " " +
                    f"FROM {table_name}" +
                    " " +
