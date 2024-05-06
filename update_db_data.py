@@ -1,6 +1,6 @@
 import psycopg2
 from params_for_DB import *
-import pandas as pd
+
 
 from psycopg2 import sql
 

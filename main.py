@@ -13,6 +13,8 @@ class Item(BaseModel):
     parameters: str
     time_start: datetime
     time_end: datetime
+    acnum: str
+    pos: str
 
 
 @app.post("/items")
@@ -27,11 +29,17 @@ async def request_in_db(item: Item):
     )
     cursor = connection.cursor()
 
-    cursor.execute(f"SELECT reportts, {item.parameters}" +
+    split_string = item.pos.split(", ")
+    quoted_string = "', '".join(split_string)
+    pos = f"'{quoted_string}'"
+
+    cursor.execute(f"SELECT reportts, acnum, pos {item.parameters}" +
                    " " +
                    f"FROM {table_name}" +
                    " " +
-                   f"WHERE reportts >= '{item.time_start}' and reportts <= '{item.time_end}'" +
+                   f"WHERE reportts >= '{item.time_start}' and reportts <= '{item.time_end}'"
+                   f" and acnum = '{item.acnum}'"
+                   f" and pos IN ({pos})" +
                    " " +
                    f"ORDER BY reportts")
 
