@@ -43,6 +43,7 @@ def make_predictions(X_test_path, acnum):
 #     except Exception as e:
 #         return str(e)
 
+
 # problem: predictions according to sorted by time dataset
 if __name__ == "__main__":
     X_test_path = 'data/X_test.csv'
@@ -54,4 +55,3 @@ if __name__ == "__main__":
             print("Predictions saved successfully.")
         else:
             print("Failed to make predictions.")
-

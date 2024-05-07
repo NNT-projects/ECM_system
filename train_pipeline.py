@@ -15,9 +15,12 @@ if __name__ == "__main__":
     y_train_tmp_path = 'tmp_data/y_train.csv'
     X_val_tmp_path = 'tmp_data/X_val.csv'
     y_val_tmp_path = 'tmp_data/y_val.csv'
-    model_save_path = 'models/lgb_model.txt'
+    
+    acnum = 'BGU'
+    
+    model_save_path = f'models/lgb_model_{acnum}.txt'
 
-    X_train_processed, y_train_processed, X_val_processed, y_val_processed = preprocess_training_data(X_train_path, y_train_path, 'VQ-BGU')
+    X_train_processed, y_train_processed, X_val_processed, y_val_processed = preprocess_training_data(X_train_path, y_train_path, f'VQ-{acnum}')
 
     trained_model = train_model(X_train_tmp_path,X_val_tmp_path, y_train_tmp_path, y_val_tmp_path, model_save_path)
 

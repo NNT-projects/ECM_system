@@ -1,14 +1,19 @@
+
+# docker build -t my_project_image .
+# docker run -v /Users/riter/Development/python-workspace/s7_pipelines/data:/app/data my_project_image
+
+
+# Use an official Python runtime as a parent image
 FROM python:3.11.7
 
+# Set the working directory in the container
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+# Copy the current directory contents into the container at /app
+COPY . /app
 
-COPY src/ .
-COPY utils.py data_preprocessing.py .  # Include utils.py if used by inference_pipeline.py
-COPY . .
+# Install any needed dependencies specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Replace 'your_model.pkl' with the actual model file path within the container
-# This assumes your model is saved as a pickle file
-CMD ["python", "src/inference_pipeline.py", "--model_path=/app/your_model.pkl"]
+# Run inference_pipeline.py when the container launches
+CMD ["python", "src/inference_pipeline.py"]
