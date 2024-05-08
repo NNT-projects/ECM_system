@@ -3,8 +3,14 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import psycopg2
 from psycopg2.extras import RealDictCursor
-from params_for_DB import *
 
+dbname = 'testDB'
+user = 'postgres'
+host = 'localhost'
+password = '1234'
+port = '5432'
+table_name = "data_engine"
+csv_file_path = 'X_train.csv'
 
 app = FastAPI()
 
