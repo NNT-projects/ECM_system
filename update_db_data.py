@@ -1,9 +1,10 @@
 import psycopg2
 from params_for_DB import *
 from io import StringIO
+import pandas as pd
 
 
-def update_database_from_dataframe(dataframe):
+def update_database_from_dataframe(dataframe: pd.DataFrame):
     connection = psycopg2.connect(
         dbname=dbname,
         user=user,
