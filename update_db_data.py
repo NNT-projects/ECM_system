@@ -1,10 +1,9 @@
 import psycopg2
 from params_for_DB import *
-import pandas as pd
+from io import StringIO
 
-from psycopg2 import sql
 
-def update_database_from_dataframe(df, table_name):
+def update_database_from_dataframe(dataframe):
     connection = psycopg2.connect(
         dbname=dbname,
         user=user,
@@ -14,17 +13,12 @@ def update_database_from_dataframe(df, table_name):
     )
     cursor = connection.cursor()
 
-    for index, row in df.iterrows():
-        columns = ', '.join(df.columns)
-        placeholders = ', '.join(['%s'] * len(df.columns))
-        query = sql.SQL("UPDATE {} SET ({}) = ({}) WHERE id = %s").format(
-            sql.Identifier(table_name),
-            sql.SQL(columns),
-            sql.SQL(placeholders)
-        )
-        values = tuple(row) + (row['id'],)
-        cursor.execute(query, values)
-        connection.commit()
+    buffer = StringIO()
+    dataframe.to_csv(buffer, header=False, index=False, sep='\t')
+    buffer.seek(0)
+
+    cursor.copy_from(buffer, table_name, columns=dataframe.columns, sep='\t')
+    connection.commit()
 
     cursor.close()
     connection.close()
