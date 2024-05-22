@@ -21,6 +21,16 @@ services:
       project-db:
         condition: service_healthy
 
+  front:
+    build:
+      context: .
+      dockerfile: front/ECM_system/Dockerfile
+    ports:
+      - '8501:8501'
+    depends_on:
+      project-db:
+        condition: service_healthy 
+
   ml:
     build:
       context: .
