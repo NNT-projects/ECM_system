@@ -1,13 +1,13 @@
 import streamlit as st
-# import altair as alt
 import pandas as pd
 import matplotlib.pyplot as plt
+import requests
 
 def getPlot(options):
     st.toast('Building a plot. Please wait...')
 
     fig = plt.figure(figsize=(17,6))
-    df_filtered = df[['datetime', options['parameter'], 'pos']][(df.datetime >= options['date_parameter'][0]) * (df.datetime <= options['date_parameter'][1]) *
+    df_filtered = df[['datetime', options['parameter'], 'pos']][(df.datetime >= options['time_start']) * (df.datetime <= options['time_end']) *
                                                             df["acnum"] == options["acnum"]]
     
     for pos in options["pos"]:
@@ -45,7 +45,8 @@ with st.sidebar:
 
     st.header("Options")
 
-    acnum_parameter = st.selectbox("Select the acnum", pd.unique(df["acnum"]))
+    sort_acnum = pd.unique(df["acnum"])
+    acnum_parameter = st.multiselect("Select the acnum", sort_acnum, default=sort_acnum[0])
 
     sort_pos = pd.unique(df['pos'])
     pos_parameter = st.multiselect("Select the pos", sort_pos, default=sort_pos)
@@ -64,30 +65,25 @@ with st.sidebar:
 
 if st.sidebar.button("Update plots"):
 
-    for param in parameter_filter:
- #getting dict of options
-        options = {
-            "parameter": param,
-            "date_parameter": [str(selected_min), str(selected_max)],
-            "acnum": acnum_parameter,
-            "pos": pos_parameter
-        }
+    pos_str = pos_parameter.join(", ")
+
+    for acnum in acnum_parameter:
+        for param in parameter_filter:
+        #getting dict of options
+            options = {
+                "parameter": param,
+                "time_start": str(selected_min),
+                "time_end": str(selected_max),
+                # "date_parameter": [str(selected_min), str(selected_max)],
+                "acnum": acnum,
+                "pos": pos_parameter
+            }
         
+            response = requests.post("http://127.0.0.1:8000/items/", json=options)
         
-        getPlot(options)
-
-
-# col = st.columns(1)
-# with col[0]:
-#     st.write('hi')
-
-# chart_data = pd.DataFrame(np.random.randn(20, 3), columns=["a", "b", "c"])
-# print(chart_data)
-# chart_data = pd.concat([df['datetime'], df['alt']])
-# st.area_chart(chart_data)
-
-# fig = plt.figure(figsize=(17,6))
-# plt.plot(df["datetime"], df["alt"], linewidth = 1)
-# st.pyplot(fig)
-
-# st.write(text)
+            if response.status_code == 200:
+                st.success(f"Ответ от сервера: {response.json()}")
+            else:
+                st.error(f"Ошибка: {response.status_code}")
+        
+            getPlot(options)
