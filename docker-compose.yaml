@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+  project-db:
+    image: "postgres:latest"
+    env_file:
+      - ./back/ECM_system/creds.env
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d testDB"]
+      interval: 10s
+      retries: 5
+
+  back:
+    build:
+      context: .
+      dockerfile: back/ECM_system/Dockerfile
+    ports:
+      - '8000:8000'
+    depends_on:
+      project-db:
+        condition: service_healthy
+
+  front:
+    build:
+      context: .
+      dockerfile: front/ECM_system/Dockerfile
+    ports:
+      - '8501:8501'
+    depends_on:
+      project-db:
+        condition: service_healthy 
+
+  ml:
+    build:
+      context: .
+      dockerfile: ml/ECM_system/Dockerfile
+    depends_on:
+      project-db:
+        condition: service_healthy
