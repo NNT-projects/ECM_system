@@ -10,7 +10,7 @@ host = 'localhost'
 password = '1234'
 port = '5432'
 table_name = "data_engine"
-csv_file_path = 'X_train.csv'
+csv_file_path = 'data/X_train.csv'
 
 app = FastAPI()
 
@@ -22,6 +22,16 @@ class Item(BaseModel):
     acnum: str
     pos: str
 
+@app.get("/ml")
+def run_ml():
+    fleet = ['BGU', 'BDU']
+    for acnum in fleet:
+        merged_predictions = make_predictions(csv_file_path, acnum)
+        if merged_predictions is not None:
+            merged_predictions.to_csv(f'data/X_with_predictions_{acnum}.csv', index=False)
+            print("Predictions saved successfully.")
+        else:
+            print("Failed to make predictions.")
 
 @app.post("/items")
 async def request_in_db(item: Item):
