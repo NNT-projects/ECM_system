@@ -1,3 +1,5 @@
+# FRONT DOCKERFILE
+
 FROM continuumio/miniconda3
 
 WORKDIR /app
