@@ -1,5 +1,5 @@
 import psycopg2
-from back.params_for_DB import *
+from params_for_DB import *
 from io import StringIO
 import pandas as pd
 
