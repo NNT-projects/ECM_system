@@ -14,7 +14,6 @@ csv_file_path = 'data/X_train.csv'
 
 app = FastAPI()
 
-
 class Item(BaseModel):
     parameters: str
     time_start: datetime
