@@ -8,7 +8,6 @@ from params_for_DB import *
 
 app = FastAPI()
 
-
 class Item(BaseModel):
     parameters: str
     time_start: datetime
