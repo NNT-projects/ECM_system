@@ -33,7 +33,11 @@ def getPlot(options):
 # '''
 
 
+<<<<<<< HEAD
 df = pd.read_csv("data/data.csv")
+=======
+df = pd.read_csv("../data/data.csv")
+>>>>>>> refs/remotes/origin/main
 
 st.set_page_config(
     page_title = "Dashboard",
@@ -89,6 +93,7 @@ if st.sidebar.button("Update plots"):
 
     # ТЕСТИТЬ ПРИ РАБОЧЕМ БЭКЕ !!!!!!!
 
+<<<<<<< HEAD
     response = requests.post("http://127.0.0.1:8000/items/", json=options)
 
     # Check if the request was successful
@@ -104,11 +109,29 @@ if st.sidebar.button("Update plots"):
         st.json(response_json)
     else:
         st.write(f"Request failed with status code: {response.status_code}")
+=======
+    # response = requests.post("http://127.0.0.1:8000/items/", json=options)
+
+    # # Check if the request was successful
+    # if response.status_code == 200:
+    #     # Parse the JSON response
+        
+    #     response_json = response.json()
+
+    #     df = pd.DataFrame(response_json)
+        
+    #     # Display the JSON response in Streamlit
+    #     st.write(df)
+    #     st.json(response_json)
+    # else:
+    #     st.write(f"Request failed with status code: {response.status_code}")
+>>>>>>> refs/remotes/origin/main
 
     ## -------------------------------------------------------- 
 
     ## ТЕСТИТЬ БЕЗ БЭКА !!!!!!!
 
+<<<<<<< HEAD
     # with open('./data/response2.json', 'r') as json_file:
     #     data = json.load(json_file)
 
@@ -117,6 +140,16 @@ if st.sidebar.button("Update plots"):
     # st.write(df)
 
     # st.json(data)
+=======
+    with open('../data/response2.json', 'r') as json_file:
+        data = json.load(json_file)
+
+    df = pd.DataFrame(data)
+
+    st.write(df)
+
+    st.json(data)
+>>>>>>> refs/remotes/origin/main
 
     ## -------------------------------------------------------- 
 

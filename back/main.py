@@ -4,13 +4,7 @@ from pydantic import BaseModel
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
-dbname = 'testDB'
-user = 'postgres'
-host = 'localhost'
-password = '1234'
-port = '5432'
-table_name = "data_engine"
-csv_file_path = 'data/X_train.csv'
+from params_for_DB import *
 
 app = FastAPI()
 
@@ -21,6 +15,8 @@ class Item(BaseModel):
     acnum: str
     pos: str
 
+
+'''
 @app.get("/ml")
 def run_ml():
     fleet = ['BGU', 'BDU']
@@ -31,6 +27,8 @@ def run_ml():
             print("Predictions saved successfully.")
         else:
             print("Failed to make predictions.")
+'''
+
 
 @app.post("/items")
 async def request_in_db(item: Item):
@@ -44,16 +42,20 @@ async def request_in_db(item: Item):
     )
     cursor = connection.cursor()
 
-    split_string = item.pos.split(", ")
-    quoted_string = "', '".join(split_string)
-    pos = f"'{quoted_string}'"
+    split_string_pos = item.pos.split(", ")
+    quoted_string_pos = "', '".join(split_string_pos)
+    pos = f"'{quoted_string_pos}'"
+
+    split_string_acnum = item.acnum.split(", ")
+    quoted_string_acnum = "', '".join(split_string_acnum)
+    acnum = f"'{quoted_string_acnum}'"
 
     cursor.execute(f"SELECT reportts, acnum, pos, {item.parameters}" +
                    " " +
                    f"FROM {table_name}" +
                    " " +
                    f"WHERE reportts >= '{item.time_start}' and reportts <= '{item.time_end}'"
-                   f" and acnum = '{item.acnum}'"
+                   f" and acnum IN ({acnum})" +
                    f" and pos IN ({pos})" +
                    " " +
                    f"ORDER BY reportts")
