@@ -1,8 +1,17 @@
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'ml', 'src')))
+from inference_pipeline import make_predictions
+
+from update_db_data import update_database_from_dataframe
+
 from datetime import datetime
 from fastapi import FastAPI
 from pydantic import BaseModel
 import psycopg2
 from psycopg2.extras import RealDictCursor
+
 
 from params_for_DB import *
 
@@ -16,18 +25,19 @@ class Item(BaseModel):
     pos: str
 
 
-'''
+
 @app.get("/ml")
 def run_ml():
     fleet = ['BGU', 'BDU']
     for acnum in fleet:
         merged_predictions = make_predictions(csv_file_path, acnum)
         if merged_predictions is not None:
-            merged_predictions.to_csv(f'data/X_with_predictions_{acnum}.csv', index=False)
+            # merged_predictions.to_csv(f'data/X_with_predictions_{acnum}.csv', index=False)
+            update_database_from_dataframe(merged_predictions)
             print("Predictions saved successfully.")
         else:
             print("Failed to make predictions.")
-'''
+
 
 
 @app.post("/items")
