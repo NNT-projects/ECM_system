@@ -44,9 +44,9 @@ def preprocess_training_data(X_train_path, y_train_path, acnum):
 def preprocess_raw_data(X, acnum):
     # X = pd.read_csv(X_path, parse_dates=['reportts'])
     
-    X.rename(columns={"reportts": "datetime"}, inplace=True)
+    #X.rename(columns={"reportts": "datetime"}, inplace=True)
     
-    dataset_time_sorted = X.sort_values(by='datetime').reset_index(drop=True)
+    dataset_time_sorted = X.sort_values(by='reportts').reset_index(drop=True)
     
     pipeline_predicting = Pipeline([
         ('drop_nan_columns', FunctionTransformer(lambda X: X.dropna(axis=1, how='all'))),
@@ -55,6 +55,6 @@ def preprocess_raw_data(X, acnum):
         ('label_encode', FunctionTransformer(label_encode)),
     ])
     
-    X_processed = pipeline_predicting.transform(dataset_time_sorted).drop(["datetime", "egtm", "acnum"], axis=1, errors="ignore")
+    X_processed = pipeline_predicting.transform(dataset_time_sorted).drop(["reportts", "egtm", "acnum"], axis=1, errors="ignore")
     
     return X_processed

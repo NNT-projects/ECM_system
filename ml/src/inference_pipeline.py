@@ -10,7 +10,7 @@ def make_predictions(X_test_path, acnum):
         
         X_processed = preprocess_raw_data(X_test, f'VQ-{acnum}')
 
-        with open(f'models/lgb_model_{acnum}.txt', 'rb') as f:
+        with open(f'../ml/models/lgb_model_{acnum}.txt', 'rb') as f:
             trained_model = pickle.load(f)
 
         predictions = trained_model.predict(X_processed)
@@ -45,6 +45,7 @@ def make_predictions(X_test_path, acnum):
 
 
 # problem: predictions according to sorted by time dataset
+"""
 if __name__ == "__main__":
     X_test_path = 'data/X_test.csv'
     fleet = ['BGU', 'BDU']
@@ -55,3 +56,4 @@ if __name__ == "__main__":
             print("Predictions saved successfully.")
         else:
             print("Failed to make predictions.")
+"""
