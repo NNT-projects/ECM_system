@@ -74,7 +74,7 @@ if st.sidebar.button("Update plots"):
     #     for param in parameter_filter:
         #getting dict of options
     options = {
-        "parameter": param_str,
+        "parameters": param_str,
         "time_start": str(selected_min),
         "time_end": str(selected_max),
         # "date_parameter": [str(selected_min), str(selected_max)],
@@ -89,24 +89,24 @@ if st.sidebar.button("Update plots"):
 
     # ТЕСТИТЬ ПРИ РАБОЧЕМ БЭКЕ !!!!!!!
 
-    # response = requests.post("http://127.0.0.1:8000/items/", json=options)
+    response = requests.post("http://127.0.0.1:8000/items/", json=options)
 
-    # # Check if the request was successful
-    # if response.status_code == 200:
-    #     # Parse the JSON response
-        
-    #     response_json = response.json()
+    # Check if the request was successful
+    if response.status_code == 200:
+        # Parse the JSON response
 
-    #     df = pd.DataFrame(response_json)
-        
-    #     # Display the JSON response in Streamlit
-    #     st.write(df)
-    #     st.json(response_json)
-    # else:
-    #     st.write(f"Request failed with status code: {response.status_code}")
+        response_json = response.json()
 
-    ## -------------------------------------------------------- 
+        df = pd.DataFrame(response_json)
 
+        # Display the JSON response in Streamlit
+        st.write(df)
+        st.json(response_json)
+    else:
+        st.write(f"Request failed with status code: {response.status_code}")
+
+    ## --------------------------------------------------------
+"""
     ## ТЕСТИТЬ БЕЗ БЭКА !!!!!!!
 
     with open('../data/response2.json', 'r') as json_file:
@@ -117,8 +117,9 @@ if st.sidebar.button("Update plots"):
     st.write(df)
 
     st.json(data)
-
+"""
     ## -------------------------------------------------------- 
 
 
     # getPlot(options)
+

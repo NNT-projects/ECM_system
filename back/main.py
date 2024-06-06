@@ -1,9 +1,15 @@
+import os
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'ml', 'src')))
 from datetime import datetime
 from fastapi import FastAPI
 from pydantic import BaseModel
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
+from inference_pipeline import make_predictions
 from params_for_DB import *
 
 app = FastAPI()
@@ -16,7 +22,7 @@ class Item(BaseModel):
     pos: str
 
 
-'''
+
 @app.get("/ml")
 def run_ml():
     fleet = ['BGU', 'BDU']
@@ -27,7 +33,7 @@ def run_ml():
             print("Predictions saved successfully.")
         else:
             print("Failed to make predictions.")
-'''
+
 
 
 @app.post("/items")
