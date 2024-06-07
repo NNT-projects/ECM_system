@@ -11,7 +11,7 @@ from sklearn.preprocessing import LabelEncoder
 # возвращаем X_train, X_test, y_train, y_test
 
 def split(dataset):
-    drop_cols = ["datetime", "egtm", "acnum"]
+    drop_cols = ["reportts", "egtm", "acnum"]
     
     X = dataset.drop(drop_cols, axis=1, errors="ignore")
     y = dataset["egtm"]

@@ -7,44 +7,36 @@ from data_preprocessing import preprocess_raw_data
 def make_predictions(X_test_path, acnum):
     try:
         X_test = pd.read_csv(X_test_path, parse_dates=['reportts'])
-        
-        X_processed = preprocess_raw_data(X_test, f'VQ-{acnum}')
 
-        with open(f'models/lgb_model_{acnum}.txt', 'rb') as f:
+        X_test_filtered = X_test[X_test['acnum'] == f'VQ-{acnum}']
+        if X_test_filtered.empty:
+            raise ValueError(f"No data found for aircraft number VQ-{acnum}")
+
+        X_processed = preprocess_raw_data(X_test_filtered, f'VQ-{acnum}')
+
+        with open(f'../ml/models/lgb_model_{acnum}.txt', 'rb') as f:
             trained_model = pickle.load(f)
 
         predictions = trained_model.predict(X_processed)
         
-        predictions_df = pd.DataFrame(predictions, columns=['egtm'])
-        merged_dataset = pd.concat([X_test[X_test['acnum'] == f'VQ-{acnum}'], predictions_df], axis=1)
+        predictions_df = pd.DataFrame(predictions, columns=['egtm'], index=X_test_filtered.index)
+
+        # Ensure indices match for concatenation
+        if not X_test_filtered.index.equals(predictions_df.index):
+            raise ValueError("Indices of X_test_filtered and predictions_df do not match for concatenation")
+    
+        
+        merged_dataset = pd.concat([X_test_filtered, predictions_df], axis=1)
 
         return merged_dataset
-
+    
     except Exception as e:
         print(f"An error occurred: {str(e)}")
         return None
 
-# def make_predictions(X_test_path, acnum):
-#     try:
-#         X_processed = preprocess_raw_data(X_test_path, f'VQ-{acnum}')
-
-#         # Load the trained model
-#         with open(f'models/lgb_model_{acnum}.txt', 'rb') as f:
-#             trained_model = pickle.load(f)
-
-#         # Make predictions using the trained model
-#         predictions = trained_model.predict(X_processed)
-        
-#         predictions_df = pd.DataFrame(predictions, columns=['egtm'])
-#         predictions_df.to_csv(f'data/predictions_{acnum}', index=False)
-
-#         return "success"
-
-#     except Exception as e:
-#         return str(e)
 
 
-# problem: predictions according to sorted by time dataset
+"""
 if __name__ == "__main__":
     X_test_path = 'data/X_test.csv'
     fleet = ['BGU', 'BDU']
@@ -55,3 +47,4 @@ if __name__ == "__main__":
             print("Predictions saved successfully.")
         else:
             print("Failed to make predictions.")
+"""
