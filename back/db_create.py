@@ -27,7 +27,7 @@ try:
         next(f)  # Skip header
         cur.copy_from(f, table_name, sep=',', null='')
 
-    cur.execute(f'ALTER TABLE {table_name} ADD COLUMN IF NOT EXISTS "egtm" VARCHAR(255)')
+    # cur.execute(f'ALTER TABLE {table_name} ADD COLUMN IF NOT EXISTS "egtm" VARCHAR(255)')
 
 except Exception as _ex:
     print('Exception occurred:', _ex)

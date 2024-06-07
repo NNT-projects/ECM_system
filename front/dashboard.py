@@ -11,8 +11,9 @@ def getPlot(df_filtered):
     # df_filtered = df[['reportts', options['parameters'], 'pos']][(df.reportts >= options['time_start']) * (df.reportts <= options['time_end'])]
     
     param = df.columns[-1]
+    all_pos = pd.unique(df_filtered['pos'])
 
-    for pos in options["pos"]:
+    for pos in all_pos:
         plt.plot(df_filtered['reportts'][df_filtered["pos"] == pos], df_filtered[param][df_filtered["pos"] == pos], linewidth = 1, label = "pos" + str(pos))
     
     plt.legend(loc="upper right", title="Legend", frameon=False)
@@ -86,47 +87,47 @@ if st.sidebar.button("Update plots"):
     st.write("PARAMETES:")
     st.write(options)
 
-    ## -------------------------------------------------------- 
+    # -------------------------------------------------------- 
 
     # ТЕСТИТЬ ПРИ РАБОЧЕМ БЭКЕ !!!!!!!
 
-    # response = requests.post("http://127.0.0.1:8000/items/", json=options)
+    response = requests.post("http://127.0.0.1:8000/items/", json=options)
+    # st.write("flag")
+    # Check if the request was successful
+    if response.status_code == 200:
+        # Parse the JSON response
 
-    # # Check if the request was successful
-    # if response.status_code == 200:
-    #     # Parse the JSON response
+        response_json = response.json()
 
-    #     response_json = response.json()
+        df = pd.DataFrame(response_json)
 
-    #     df = pd.DataFrame(response_json)
-
-    #     # Display the JSON response in Streamlit
-    #     st.write(df)
-    #     st.json(response_json)
+        # Display the JSON response in Streamlit
+        st.write(df)
+        st.json(response_json)
     # else:
     #     st.write(f"Request failed with status code: {response.status_code}")
 
-    ## --------------------------------------------------------
+    # --------------------------------------------------------
 
-    ## ТЕСТИТЬ БЕЗ БЭКА !!!!!!!
-    options = {
-        "parameters": "ffr, foc",
-        "time_start": "2018-12-24",
-        "time_end": "2019-03-05",
-        "acnum": "VQ-BGU, VQ-BDU",
-        "pos": "1, 2"
-    }
-    acnum_parameter = ['VQ-BGU', 'VQ-BDU']
-    parameter_filter = ['ffr', 'foc']
+    # ## ТЕСТИТЬ БЕЗ БЭКА !!!!!!!
+    # options = {
+    #     "parameters": "ffr, foc",
+    #     "time_start": "2018-12-24",
+    #     "time_end": "2019-03-05",
+    #     "acnum": "VQ-BGU, VQ-BDU",
+    #     "pos": "1, 2"
+    # }
+    # acnum_parameter = ['VQ-BGU', 'VQ-BDU']
+    # parameter_filter = ['ffr', 'foc']
     
-    with open('../data/response2.json', 'r') as json_file:
-        data = json.load(json_file)
+    # with open('../data/response2.json', 'r') as json_file:
+    #     data = json.load(json_file)
 
-    df = pd.DataFrame(data)
+    # df = pd.DataFrame(data)
 
-    st.write(df)
+    # st.write(df)
 
-    st.json(data)
+    # st.json(data)
 
     ## -------------------------------------------------------- 
 
