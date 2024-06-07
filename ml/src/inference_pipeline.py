@@ -34,26 +34,6 @@ def make_predictions(X_test_path, acnum):
         print(f"An error occurred: {str(e)}")
         return None
 
-# def make_predictions(X_test_path, acnum):
-#     try:
-#         X_test = pd.read_csv(X_test_path, parse_dates=['reportts'])
-        
-#         X_processed = preprocess_raw_data(X_test, f'VQ-{acnum}')
-
-#         with open(f'../ml/models/lgb_model_{acnum}.txt', 'rb') as f:
-#             trained_model = pickle.load(f)
-
-#         predictions = trained_model.predict(X_processed)
-        
-#         predictions_df = pd.DataFrame(predictions, columns=['egtm'])
-#         merged_dataset = pd.concat([X_test[X_test['acnum'] == f'VQ-{acnum}'], predictions_df], axis=1)
-
-#         return merged_dataset
-
-#     except Exception as e:
-#         print(f"An error occurred: {str(e)}")
-#         return None
-
 
 
 """
