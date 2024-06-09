@@ -104,8 +104,8 @@ if st.sidebar.button("Update plots"):
         # Display the JSON response in Streamlit
         st.write(df)
         st.json(response_json)
-    # else:
-    #     st.write(f"Request failed with status code: {response.status_code}")
+    else:
+        st.write(f"Request failed with status code: {response.status_code}")
 
     # --------------------------------------------------------
 
