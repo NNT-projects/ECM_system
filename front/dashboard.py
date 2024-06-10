@@ -10,11 +10,12 @@ def getPlot(df_filtered):
     fig = plt.figure(figsize=(17,6))
     # df_filtered = df[['reportts', options['parameters'], 'pos']][(df.reportts >= options['time_start']) * (df.reportts <= options['time_end'])]
     
-    param = df.columns[-1]
+    param = df_filtered.columns[-1]
     all_pos = pd.unique(df_filtered['pos'])
 
     for pos in all_pos:
-        plt.plot(df_filtered['reportts'][df_filtered["pos"] == pos], df_filtered[param][df_filtered["pos"] == pos], linewidth = 1, label = "pos" + str(pos))
+        #TODO добавить alpha может быть zorder
+        plt.plot(df_filtered['reportts'][df_filtered["pos"] == pos], df_filtered[param][df_filtered["pos"] == pos], alpha=0.7, linewidth = 1, label = "pos" + str(pos))
     
     plt.legend(loc="upper right", title="Legend", frameon=False)
 
@@ -35,7 +36,7 @@ def getPlot(df_filtered):
 # '''
 
 
-df = pd.read_csv("../data/data.csv")
+df = pd.read_csv("../data/X_with_predictions_BDU.csv")
 
 st.set_page_config(
     page_title = "Dashboard",
@@ -92,7 +93,7 @@ if st.sidebar.button("Update plots"):
     # ТЕСТИТЬ ПРИ РАБОЧЕМ БЭКЕ !!!!!!!
 
     response = requests.post("http://127.0.0.1:8000/items/", json=options)
-    # st.write("flag")
+    st.write("flag")
     # Check if the request was successful
     if response.status_code == 200:
         # Parse the JSON response
@@ -114,10 +115,10 @@ if st.sidebar.button("Update plots"):
     #     "parameters": "ffr, foc",
     #     "time_start": "2018-12-24",
     #     "time_end": "2019-03-05",
-    #     "acnum": "VQ-BGU, VQ-BDU",
+    #     "acnum": "VQ-BDU",
     #     "pos": "1, 2"
     # }
-    # acnum_parameter = ['VQ-BGU', 'VQ-BDU']
+    # acnum_parameter = ['VQ-BDU']
     # parameter_filter = ['ffr', 'foc']
     
     # with open('../data/response2.json', 'r') as json_file:
@@ -133,6 +134,9 @@ if st.sidebar.button("Update plots"):
 
     for acnum in acnum_parameter:
         for param in parameter_filter:
+            st.write(df[['reportts', 'acnum', 'pos', param]][(df['acnum'] == acnum) * 
+                (df.reportts >= options['time_start']) * (df.reportts <= options['time_end'])])
             getPlot(df[['reportts', 'acnum', 'pos', param]][(df['acnum'] == acnum) * 
                 (df.reportts >= options['time_start']) * (df.reportts <= options['time_end'])])
+            
 
