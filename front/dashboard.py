@@ -1,31 +1,61 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 import requests
 import json
 # from matplotlib.ticker import MaxNLocator
+# from matplotlib.ticker import MultipleLocator
 
 def getPlot(df_filtered):
     st.toast('Building a plot. Please wait...')
 
-    # fig, ax = plt.subplots()
+    param = df_filtered.columns[-1]
+
+    # Преобразование столбцов в соответствующие типы данных
+    df_filtered['reportts'] = pd.to_datetime(df_filtered['reportts'])
+    df_filtered[param] = df_filtered[param].astype(float)
+
+    fig = plt.figure(figsize=(17, 6))
+    sns.lineplot(x='reportts', y=param, hue='pos', data=df_filtered, alpha=0.7)
+
+    # Настройка меток осей и заголовка
+    plt.xlabel('Time')
+    plt.ylabel('EGTM')
+    plt.title('EGTM Over Time for Different Positions')
+
+    # Добавление сетки
+    plt.grid(True)
+
+    # Отображение графика
+    st.pyplot(fig)
+
+def getPlot1(df_filtered):
+    st.toast('Building a plot. Please wait...')
+
+    fig, ax = plt.subplots(figsize=(17,6))
     # ax.plot(x, y)
 
-    # # Настройка делений по оси ординат с помощью MaxNLocator
-    # ax.yaxis.set_major_locator(MaxNLocator(nbins=5))  # nbins - максимальное количество делений
+    # Преобразование столбцов в соответствующие типы данных
+    df_filtered['reportts'] = pd.to_datetime(df_filtered['reportts'])
+    df_filtered[param] = df_filtered[param].astype(float)
 
-
-
-    fig = plt.figure(figsize=(17,6))
+    # fig = plt.figure(figsize=(17,6))
     # df_filtered = df[['reportts', options['parameters'], 'pos']][(df.reportts >= options['time_start']) * (df.reportts <= options['time_end'])]
     
     param = df_filtered.columns[-1]
     all_pos = pd.unique(df_filtered['pos'])
 
     for pos in all_pos:
+        # ax.plot(df_filtered['reportts'][df_filtered["pos"] == pos].dt.date, df_filtered[param][df_filtered["pos"] == pos], linestyle='-', alpha=0.7, linewidth = 2, label = "pos" + str(pos))
+        # ax.grid(True)
         plt.plot(df_filtered['reportts'][df_filtered["pos"] == pos].dt.date, df_filtered[param][df_filtered["pos"] == pos], linestyle='-', alpha=0.7, linewidth = 2, label = "pos" + str(pos))
-        plt.grid(True)
-    
+
+
+    # ax.yaxis.set_major_locator(MaxNLocator(nbins=5))  # nbins - максимальное количество делений
+    # ax.yaxis.set_major_locator(MultipleLocator(0.5))  # Шаг между делениями
+
+
     plt.legend(loc="upper right", title="Legend", frameon=False)
 
     plt.xlabel('Date')
@@ -64,7 +94,7 @@ with st.sidebar:
     sort_pos = pd.unique(df['pos'])
     pos_parameter = st.multiselect("Select the pos", sort_pos, default=sort_pos)
 
-    parameter_filter = st.multiselect("Select the parameter", df.columns[7:])
+    parameter_filter = st.multiselect("Select the parameter", df.columns[7:], default=['alt','acct','egtm'])
     df['reportts'] = pd.to_datetime(df['reportts'])
     MIN_MAX_RANGE = (df["reportts"].min().date(), df["reportts"].max().date())
     PRE_SELECTED_DATES = (df["reportts"].min().date(), df["reportts"].max().date())
@@ -143,7 +173,7 @@ if st.sidebar.button("Update plots"):
 
     for acnum in acnum_parameter:
         for param in parameter_filter:
-            st.write(df[['reportts', 'acnum', 'pos', param]][(df['acnum'] == acnum) * 
-                (df['reportts'] >= options['time_start']) * (df['reportts'] <= options['time_end'])])
+            print(df[['reportts', 'acnum', 'pos', param]][(df['acnum'] == acnum) * 
+                (df['reportts'] >= options['time_start']) * (df['reportts'] <= options['time_end'])].head(30))
             getPlot(df[['reportts', 'acnum', 'pos', param]][(df['acnum'] == acnum) * 
                 (df['reportts'] >= options['time_start']) * (df['reportts'] <= options['time_end'])])
