@@ -3,9 +3,18 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import requests
 import json
+# from matplotlib.ticker import MaxNLocator
 
 def getPlot(df_filtered):
     st.toast('Building a plot. Please wait...')
+
+    # fig, ax = plt.subplots()
+    # ax.plot(x, y)
+
+    # # Настройка делений по оси ординат с помощью MaxNLocator
+    # ax.yaxis.set_major_locator(MaxNLocator(nbins=5))  # nbins - максимальное количество делений
+
+
 
     fig = plt.figure(figsize=(17,6))
     # df_filtered = df[['reportts', options['parameters'], 'pos']][(df.reportts >= options['time_start']) * (df.reportts <= options['time_end'])]
@@ -14,8 +23,8 @@ def getPlot(df_filtered):
     all_pos = pd.unique(df_filtered['pos'])
 
     for pos in all_pos:
-        #TODO добавить alpha может быть zorder
-        plt.plot(df_filtered['reportts'][df_filtered["pos"] == pos], df_filtered[param][df_filtered["pos"] == pos], alpha=0.7, linewidth = 1, label = "pos" + str(pos))
+        plt.plot(df_filtered['reportts'][df_filtered["pos"] == pos].dt.date, df_filtered[param][df_filtered["pos"] == pos], linestyle='-', alpha=0.7, linewidth = 2, label = "pos" + str(pos))
+        plt.grid(True)
     
     plt.legend(loc="upper right", title="Legend", frameon=False)
 
@@ -93,7 +102,7 @@ if st.sidebar.button("Update plots"):
     # ТЕСТИТЬ ПРИ РАБОЧЕМ БЭКЕ !!!!!!!
 
     response = requests.post("http://127.0.0.1:8000/items/", json=options)
-    st.write("flag")
+    
     # Check if the request was successful
     if response.status_code == 200:
         # Parse the JSON response
@@ -101,13 +110,13 @@ if st.sidebar.button("Update plots"):
         response_json = response.json()
 
         df = pd.DataFrame(response_json)
+        df['reportts'] = pd.to_datetime(df['reportts'])
 
         # Display the JSON response in Streamlit
         st.write(df)
         st.json(response_json)
     else:
         st.write(f"Request failed with status code: {response.status_code}")
-
     # --------------------------------------------------------
 
     # ## ТЕСТИТЬ БЕЗ БЭКА !!!!!!!
@@ -135,8 +144,6 @@ if st.sidebar.button("Update plots"):
     for acnum in acnum_parameter:
         for param in parameter_filter:
             st.write(df[['reportts', 'acnum', 'pos', param]][(df['acnum'] == acnum) * 
-                (df.reportts >= options['time_start']) * (df.reportts <= options['time_end'])])
+                (df['reportts'] >= options['time_start']) * (df['reportts'] <= options['time_end'])])
             getPlot(df[['reportts', 'acnum', 'pos', param]][(df['acnum'] == acnum) * 
-                (df.reportts >= options['time_start']) * (df.reportts <= options['time_end'])])
-            
-
+                (df['reportts'] >= options['time_start']) * (df['reportts'] <= options['time_end'])])
