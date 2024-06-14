@@ -2,7 +2,7 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder, FunctionTransformer
 from sklearn.pipeline import Pipeline
 
-from utils import split, label_encode
+from utils import split, label_encode, create_date_features
 
 def preprocess_training_data(X_train_path, y_train_path, acnum):
 
@@ -42,19 +42,20 @@ def preprocess_training_data(X_train_path, y_train_path, acnum):
     return X_train_processed, y_train_processed, X_val_processed, y_val_processed
 
 def preprocess_raw_data(X, acnum):
-    # X = pd.read_csv(X_path, parse_dates=['reportts'])
-    
-    #X.rename(columns={"reportts": "datetime"}, inplace=True)
-    
-    dataset_time_sorted = X.sort_values(by='reportts').reset_index(drop=True)
-    
-    pipeline_predicting = Pipeline([
-        ('drop_nan_columns', FunctionTransformer(lambda X: X.dropna(axis=1, how='all'))),
-    #     ('custom_feature_engineering', FunctionTransformer(custom_feature_engineering)),
-        ('filter_data', FunctionTransformer(lambda X: X[X['acnum'] == acnum].reset_index(drop=True))),
-        ('label_encode', FunctionTransformer(label_encode)),
-    ])
-    
-    X_processed = pipeline_predicting.transform(dataset_time_sorted).drop(["reportts", "egtm", "acnum"], axis=1, errors="ignore")
-    
-    return X_processed
+    try:
+        dataset_time_sorted = X.sort_values(by='reportts').reset_index(drop=True)
+        
+        pipeline_predicting = Pipeline([
+            ('drop_nan_columns', FunctionTransformer(lambda X: X.dropna(axis=1, how='all'))),
+            ('custom_feature_engineering', FunctionTransformer(create_date_features)),
+            ('filter_data', FunctionTransformer(lambda X: X[X['acnum'] == acnum].reset_index(drop=True))),
+            ('label_encode', FunctionTransformer(label_encode)),
+        ])
+        
+        X_processed = pipeline_predicting.transform(dataset_time_sorted).drop(["reportts", "egtm", "acnum"], axis=1, errors="ignore")
+        
+        return X_processed
+
+    except Exception as e:
+        print(f"Error in preprocess_raw_data: {str(e)}")
+        return None
