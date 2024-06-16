@@ -34,9 +34,9 @@ def run_ml():
         if merged_predictions is not None:
             # merged_predictions.to_csv(f'data/X_with_predictions_{acnum}.csv', index=False)
             update_database_from_dataframe(merged_predictions)
-            print("Predictions saved successfully.")
+            return "Predictions saved successfully."
         else:
-            print("Failed to make predictions.")
+            return "Failed to make predictions."
 
 
 

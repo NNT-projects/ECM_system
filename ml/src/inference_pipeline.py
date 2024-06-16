@@ -13,10 +13,12 @@ def make_predictions(X_test_path, acnum):
             raise ValueError(f"No data found for aircraft number VQ-{acnum}")
 
         X_processed = preprocess_raw_data(X_test_filtered, f'VQ-{acnum}')
+        if X_processed is None:
+            raise ValueError("Error in preprocessing raw data")
 
         with open(f'../ml/models/lgb_model_{acnum}.txt', 'rb') as f:
             trained_model = pickle.load(f)
-
+        
         predictions = trained_model.predict(X_processed)
         
         predictions_df = pd.DataFrame(predictions, columns=['egtm'], index=X_test_filtered.index)
@@ -24,16 +26,14 @@ def make_predictions(X_test_path, acnum):
         # Ensure indices match for concatenation
         if not X_test_filtered.index.equals(predictions_df.index):
             raise ValueError("Indices of X_test_filtered and predictions_df do not match for concatenation")
-    
         
         merged_dataset = pd.concat([X_test_filtered, predictions_df], axis=1)
 
         return merged_dataset
-    
+
     except Exception as e:
         print(f"An error occurred: {str(e)}")
         return None
-
 
 
 """
