@@ -14,6 +14,11 @@ def update_database_from_dataframe(dataframe: pd.DataFrame):
         )
         cursor = connection.cursor()
 
+        create_table_query = f'CREATE TABLE IF NOT EXISTS {table_name} ('
+        columns = [f'{column_name} VARCHAR(255)' for column_name in dataframe.columns]
+        create_table_query += ', '.join(columns) + ');'
+        cursor.execute(create_table_query)
+
         for index, row in dataframe.iterrows():
             reportts = row['reportts'].strftime('%Y-%m-%d %H:%M:%S')
             acnum = row['acnum']
