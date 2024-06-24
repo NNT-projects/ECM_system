@@ -4,8 +4,7 @@ FROM continuumio/miniconda3
 
 WORKDIR /app
 
-COPY ./front/ECM_system/src /app
-COPY ./front/ECM_system/data /app
+
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \

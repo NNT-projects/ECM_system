@@ -5,17 +5,17 @@
 
 
 # Use an official Python runtime as a parent image
-# FROM python:3.11.7
+FROM python:3.11.7
 
 # Set the working directory in the container
-# WORKDIR /app
+WORKDIR /app
 
 # Copy the current directory contents into the container at /app
-# COPY . /app
+COPY . /app
 
 # Install any needed dependencies specified in requirements.txt
-# RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Run inference_pipeline.py when the container launches
-# CMD ["python", "src/inference_pipeline.py"]
+CMD ["python", "src/inference_pipeline.py"]
 
