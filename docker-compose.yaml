@@ -3,7 +3,7 @@ services:
   project-db:
     image: "postgres:latest"
     env_file:
-      - ./back/ECM_system/creds.env
+      - ./back/creds.env
     ports:
       - '5432:5432'
     healthcheck:
@@ -14,7 +14,7 @@ services:
   back:
     build:
       context: .
-      dockerfile: back/ECM_system/Dockerfile
+      dockerfile: ./back/Dockerfile
     ports:
       - '8000:8000'
     depends_on:
@@ -24,7 +24,7 @@ services:
   front:
     build:
       context: .
-      dockerfile: front/ECM_system/Dockerfile
+      dockerfile: ./front/Dockerfile
     ports:
       - '8501:8501'
     depends_on:
@@ -34,7 +34,7 @@ services:
   ml:
     build:
       context: .
-      dockerfile: ml/ECM_system/Dockerfile
+      dockerfile: ./ml/Dockerfile
     depends_on:
       project-db:
         condition: service_healthy

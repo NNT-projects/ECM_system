@@ -1,19 +1,17 @@
-#
-FROM python:3.9
+FROM python:3.10
 
-#
+
 WORKDIR /code
 
-#
-COPY ./back/ECM_system/requirements.txt /code/requirements.txt
 
-#
+COPY ./back/requirements.txt /code/requirements.txt
+
+RUN apt-get update && apt-get install -y libpq-dev build-essential
+
+
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
-#
-COPY ./back/ECM_system /code/app
 
-EXPOSE 8000
+COPY ./back /code/
 
-#
-CMD ["uvicorn", "app.main:app",  "--port", "8000"]
+CMD ["uvicorn", "main:app",  "--reload"]
