@@ -32,11 +32,12 @@ def run_ml():
     for acnum in fleet:
         merged_predictions = make_predictions(csv_file_path, acnum)
         if merged_predictions is not None:
-            # merged_predictions.to_csv(f'data/X_with_predictions_{acnum}.csv', index=False)
+            merged_predictions.to_csv(f'../data/X_with_predictions_{acnum}.csv', index=False)
             update_database_from_dataframe(merged_predictions)
-            return "Predictions saved successfully."
+            print("Predictions saved successfully.")
         else:
             return "Failed to make predictions."
+    return "Predictions saved successfully."
 
 
 

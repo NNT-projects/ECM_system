@@ -20,54 +20,56 @@ def getPlot(df_filtered):
     sns.lineplot(x='reportts', y=param, hue='pos', data=df_filtered, alpha=0.7)
 
     # Настройка меток осей и заголовка
-    plt.xlabel('Time')
-    plt.ylabel('EGTM')
-    plt.title('EGTM Over Time for Different Positions')
+    plt.xlabel('Date')
+    plt.ylabel(param)
+    # plt.title('EGTM Over Time for Different Positions')
 
     # Добавление сетки
     plt.grid(True)
 
     # Отображение графика
+    st.write(f"""#### {param} Score {df_filtered['acnum'].iloc[0]}""")
+
     st.pyplot(fig)
 
-def getPlot1(df_filtered):
-    st.toast('Building a plot. Please wait...')
+# def getPlot1(df_filtered):
+#     st.toast('Building a plot. Please wait...')
 
-    fig, ax = plt.subplots(figsize=(17,6))
-    # ax.plot(x, y)
+#     fig, ax = plt.subplots(figsize=(17,6))
+#     # ax.plot(x, y)
 
-    # Преобразование столбцов в соответствующие типы данных
-    df_filtered['reportts'] = pd.to_datetime(df_filtered['reportts'])
-    df_filtered[param] = df_filtered[param].astype(float)
+#     # Преобразование столбцов в соответствующие типы данных
+#     df_filtered['reportts'] = pd.to_datetime(df_filtered['reportts'])
+#     df_filtered[param] = df_filtered[param].astype(float)
 
-    # fig = plt.figure(figsize=(17,6))
-    # df_filtered = df[['reportts', options['parameters'], 'pos']][(df.reportts >= options['time_start']) * (df.reportts <= options['time_end'])]
+#     # fig = plt.figure(figsize=(17,6))
+#     # df_filtered = df[['reportts', options['parameters'], 'pos']][(df.reportts >= options['time_start']) * (df.reportts <= options['time_end'])]
     
-    param = df_filtered.columns[-1]
-    all_pos = pd.unique(df_filtered['pos'])
+#     param = df_filtered.columns[-1]
+#     all_pos = pd.unique(df_filtered['pos'])
 
-    for pos in all_pos:
-        # ax.plot(df_filtered['reportts'][df_filtered["pos"] == pos].dt.date, df_filtered[param][df_filtered["pos"] == pos], linestyle='-', alpha=0.7, linewidth = 2, label = "pos" + str(pos))
-        # ax.grid(True)
-        plt.plot(df_filtered['reportts'][df_filtered["pos"] == pos].dt.date, df_filtered[param][df_filtered["pos"] == pos], linestyle='-', alpha=0.7, linewidth = 2, label = "pos" + str(pos))
-
-
-    # ax.yaxis.set_major_locator(MaxNLocator(nbins=5))  # nbins - максимальное количество делений
-    # ax.yaxis.set_major_locator(MultipleLocator(0.5))  # Шаг между делениями
+#     for pos in all_pos:
+#         # ax.plot(df_filtered['reportts'][df_filtered["pos"] == pos].dt.date, df_filtered[param][df_filtered["pos"] == pos], linestyle='-', alpha=0.7, linewidth = 2, label = "pos" + str(pos))
+#         # ax.grid(True)
+#         plt.plot(df_filtered['reportts'][df_filtered["pos"] == pos].dt.date, df_filtered[param][df_filtered["pos"] == pos], linestyle='-', alpha=0.7, linewidth = 2, label = "pos" + str(pos))
 
 
-    plt.legend(loc="upper right", title="Legend", frameon=False)
+#     # ax.yaxis.set_major_locator(MaxNLocator(nbins=5))  # nbins - максимальное количество делений
+#     # ax.yaxis.set_major_locator(MultipleLocator(0.5))  # Шаг между делениями
 
-    plt.xlabel('Date')
+
+#     plt.legend(loc="upper right", title="Legend", frameon=False)
+
+#     plt.xlabel('Date')
 
 
-    #TODO полтянуть ylabel измерение параметра
-    # plt.ylabel('Date')
-    st.write(f"""#### {param} Score """)
+#     #TODO полтянуть ylabel измерение параметра
+#     # plt.ylabel('Date')
+#     st.write(f"""#### {param} Score """)
     
-    st.pyplot(fig)
+#     st.pyplot(fig)
 
-    return
+#     return
 
 # ''' получение json
 # with open('countries.geo.json') as json_file:
@@ -75,7 +77,11 @@ def getPlot1(df_filtered):
 # '''
 
 
-df = pd.read_csv("../data/X_with_predictions_BDU.csv")
+
+df1 = pd.read_csv("../data/X_with_predictions_BDU.csv")
+df2 = pd.read_csv("../data/X_with_predictions_BGU.csv")
+
+df = pd.concat([df1, df2], axis=0)
 
 st.set_page_config(
     page_title = "Dashboard",
@@ -124,8 +130,8 @@ if st.sidebar.button("Update plots"):
         "pos": pos_str
     }
 
-    st.write("PARAMETES:")
-    st.write(options)
+    # st.write("PARAMETES:")
+    # st.write(options)
 
     # -------------------------------------------------------- 
 
@@ -144,7 +150,7 @@ if st.sidebar.button("Update plots"):
 
         # Display the JSON response in Streamlit
         st.write(df)
-        st.json(response_json)
+        # st.json(response_json)
     else:
         st.write(f"Request failed with status code: {response.status_code}")
     # --------------------------------------------------------

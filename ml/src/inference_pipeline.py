@@ -18,6 +18,7 @@ def make_predictions(X_test_path, acnum):
             trained_model = pickle.load(f)
 
         predictions = trained_model.predict(X_processed)
+
         
         predictions_df = pd.DataFrame(predictions, columns=['egtm'], index=X_test_filtered.index)
 
@@ -25,7 +26,6 @@ def make_predictions(X_test_path, acnum):
         if not X_test_filtered.index.equals(predictions_df.index):
             raise ValueError("Indices of X_test_filtered and predictions_df do not match for concatenation")
     
-        
         merged_dataset = pd.concat([X_test_filtered, predictions_df], axis=1)
 
         return merged_dataset
